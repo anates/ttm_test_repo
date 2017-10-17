@@ -717,6 +717,7 @@ namespace Step15
 		(void) component;
 		physics_equations<dim> local_equations(0);
 		(void) local_equations;
+		return 0;
 		if(component < dim)
 			return 1;
 		else
@@ -870,7 +871,7 @@ namespace Step15
 		physics_equations<dim> local_equations(0);
 		(void) local_equations;
 		//return 0;
-		return 0;///*std::sin(2 * numbers::PI * (p[0]+p[1])) + */((int)component/(int)2 + 1);
+		return std::sin(2 * numbers::PI * (p[0]+p[1]));
 	}
 
 	template <int dim>
@@ -1238,12 +1239,12 @@ namespace Step15
 						for (unsigned int d = 0; d < dim; d++)
 							for(size_t local_dim = 0; local_dim < dim; ++local_dim)
 							{
-								R_i += grad_TE[q][d][local_dim] * fe_values[surface_TE].gradient(i, q)[d][local_dim]/*(((val_TE[q][d] - val_TE_old[q][d])/time_step) * fe_values[surface_TE].value(i, q)[d]
-										+ (theta * grad_TE[q][d][local_dim] + (1 - theta) * grad_TE_old[q][d][local_dim]) * fe_values[surface_TE].gradient(i, q)[d][local_dim])*/	* fe_values.JxW(q);
-								R_i += (((val_N[q][d] - val_N_old[q][d])/time_step) * fe_values[surface_N].value(i, q)[d]
-										+ (theta * grad_N[q][d][local_dim] + (1 - theta) * grad_N_old[q][d][local_dim]) * fe_values[surface_N].gradient(i, q)[d][local_dim])	* fe_values.JxW(q);
-								R_i += (((val_TL[q][d] - val_TL_old[q][d])/time_step) * fe_values[surface_TL].value(i, q)[d]
-										+ (theta * grad_TL[q][d][local_dim] + (1 - theta) * grad_TL_old[q][d][local_dim]) * fe_values[surface_TL].gradient(i, q)[d][local_dim])	* fe_values.JxW(q);
+								R_i += (((val_TE[q][d] - val_TE_old[q][d]) / time_step) * fe_values[surface_TE].value(i, q)[d] +
+										(theta * grad_TE[q][d][local_dim] + (1 - theta) * grad_TE_old[q][d][local_dim]) * fe_values[surface_TE].gradient(i, q)[d][local_dim]) * fe_values.JxW(q);
+//								R_i += (((val_N[q][d] - val_N_old[q][d]) / time_step) * fe_values[surface_N].value(i, q)[d] +
+//										(theta * grad_N[q][d][local_dim] + (1 - theta) * grad_N_old[q][d][local_dim]) * fe_values[surface_N].gradient(i, q)[d][local_dim]) * fe_values.JxW(q);
+//								R_i += (((val_TL[q][d] - val_TL_old[q][d]) / time_step) * fe_values[surface_TL].value(i, q)[d] +
+//										(theta * grad_TL[q][d][local_dim] + (1 - theta) * grad_TL_old[q][d][local_dim]) * fe_values[surface_TL].gradient(i, q)[d][local_dim]) * fe_values.JxW(q);
 							}
 					}
 
@@ -1482,15 +1483,16 @@ namespace Step15
 						{
 							for(size_t local_dim = 0; local_dim < dim; ++local_dim)
 							{
-								cell_residual(i) -= gradients_TE[q_point][d][local_dim] * fe_values[surface_TE].gradient(i, q_point)[d][local_dim]/*(((values_TE[q_point][d] - old_values_TE[q_point][d])/time_step) * fe_values[surface_TE].value(i, q_point)[d]
+								cell_residual(i) -= (((values_TE[q_point][d] - old_values_TE[q_point][d]) / time_step) * fe_values[surface_TE].value(i, q_point)[d] +
+													 (theta * gradients_TE[q_point][d][local_dim] + (1 - theta) * old_gradients_TE[q_point][d][local_dim]) * fe_values[surface_TE].gradient(i, q_point)[d][local_dim])/*(((values_TE[q_point][d] - old_values_TE[q_point][d])/time_step) * fe_values[surface_TE].value(i, q_point)[d]
 													 + (theta * gradients_TE[q_point][d][local_dim] + (1 - theta) * old_gradients_TE[q_point][d][local_dim]) * fe_values[surface_TE].gradient(i, q_point)[d][local_dim])*/
 										* fe_values.JxW(q_point);
-								cell_residual(i) -= (((values_TL[q_point][d] - old_values_TL[q_point][d])/time_step) * fe_values[surface_TL].value(i, q_point)[d]
-													 + (theta * gradients_TL[q_point][d][local_dim] + (1 - theta) * old_gradients_TL[q_point][d][local_dim]) * fe_values[surface_TL].gradient(i, q_point)[d][local_dim])
-										* fe_values.JxW(q_point);
-								cell_residual(i) -= (((values_N[q_point][d] - old_values_N[q_point][d])/time_step) * fe_values[surface_N].value(i, q_point)[d]
-													 + (theta * gradients_N[q_point][d][local_dim] + (1 - theta) * old_gradients_N[q_point][d][local_dim]) * fe_values[surface_N].gradient(i, q_point)[d][local_dim])
-										* fe_values.JxW(q_point);
+//								cell_residual(i) -= (((values_TL[q_point][d] - old_values_TL[q_point][d]) / time_step) * fe_values[surface_TL].value(i, q_point)[d] +
+//										(theta * gradients_TL[q_point][d][local_dim] - (1 - theta) * old_gradients_TL[q_point][d][local_dim]) * fe_values[surface_TL].gradient(i, q_point)[d][local_dim])
+//										* fe_values.JxW(q_point);
+//								cell_residual(i) -= (((values_N[q_point][d] - old_values_N[q_point][d]) / time_step) * fe_values[surface_N].value(i, q_point)[d] +
+//										(theta * gradients_N[q_point][d][local_dim] - (1 - theta) * old_gradients_N[q_point][d][local_dim]) * fe_values[surface_N].gradient(i, q_point)[d][local_dim])
+//										* fe_values.JxW(q_point);
 							}
 						}
 					}
@@ -1548,7 +1550,7 @@ namespace Step15
 		data_out.attach_dof_handler (dof_handler);
 		std::vector<std::string> solution_names = std::vector<std::string>{"solution_A", "solution_A", "solution_B", "solution_B", "solution_C", "solution_C"};
 		std::vector<DataComponentInterpretation::DataComponentInterpretation> data_component_interpretation(n_components * dim, DataComponentInterpretation::component_is_part_of_vector);
-		data_out.add_data_vector (newton_update, solution_names, DataOut<dim>::type_dof_data, data_component_interpretation);
+		data_out.add_data_vector (old_solution, solution_names, DataOut<dim>::type_dof_data, data_component_interpretation);
 		Vector<float> subdomain (triangulation.n_active_cells());
 		for (unsigned int i=0; i<subdomain.size(); ++i)
 			subdomain(i) = triangulation.locally_owned_subdomain();
@@ -1668,9 +1670,7 @@ namespace Step15
 					{
 						++refinement;
 						print_status_update(pcout, std::string("******** Refined mesh ") + std::to_string(refinement) + std::string(" ********\n"), true);
-
 						refine_mesh();
-						output_results(100);
 					}
 
 				print_status_update(pcout, std::string("Calculating initial residual\nInitial Residual: ") + std::to_string(compute_residual(0, I_val, I_val_old)) + std::string("\n"), true);
@@ -1685,12 +1685,10 @@ namespace Step15
 					print_status_update(pcout, std::string("Current l2 norm is " + std::to_string(previous_res)), true);
 					print_status_update(pcout, "Trying to solve\n");
 					solve (I_val, I_val_old);
-					output_results(inner_iteration+1);
 					//recalculate_step_length(I_val, I_val_old);
 					print_status_update(pcout, std::string("  Residual: ") + std::to_string(compute_residual(0, I_val, I_val_old)) + std::string("\n"), true);
 					//refine_this_mesh = true;
 				}
-				return;
 				if(refinement > 1000)
 					next_step = true;
 				if(previous_res > previous_res_threshold)
@@ -1741,9 +1739,8 @@ namespace Step15
 			print_status_update(pcout, std::string("*********Time step to : ") + std::to_string(cur_time/time_step) + std::string(" of ") + std::to_string(max_time/time_step) + std::string(" Steps *********\n"), true);
 			cur_time += time_step;
 			old_solution = present_solution;
-			output_results(cur_time/time_step + abs(cur0_time)/time_step);
 			old_solution.compress(VectorOperation::insert);
-			//output_results(cur_time/time_step + abs(cur0_time)/time_step);
+			output_results(cur_time/time_step + abs(cur0_time)/time_step);
 			I_val = pulse_intensity * calculate_gaussian_pulse(cur_time, pulse_duration);
 			I_val_old = pulse_intensity * calculate_gaussian_pulse(cur_time - time_step, pulse_duration);
 			print_status_update(pcout, std::string("New light intensity is ") + std::to_string(I_val) + std::string(" (") + std::to_string(I_val/I_peak*100) + std::string("%)\n"), true);
