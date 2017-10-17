@@ -1,0 +1,27 @@
+#Listing of parameters
+subsection File processing data
+    set Use stdcout = false
+    set Log file name = Logfile.txt
+end
+#Grid generation data
+subsection Grid generation data
+    set Maximal grid density = 8
+    set Minimal grid density = 3 
+end
+#Pulse data
+subsection Pulse data
+    set Maximum pulse energy = 1e-6
+    set Pulse duration = 1
+    set Pulse focus size = 1e-6
+    set Original beam radius = 1e-3
+    set Pulse wavelength = 1.2e-6
+end
+#Simulation parameters
+subsection Simulation parameters
+    set Relative time step = 1
+    set Maximum inner iterations = 10 
+    set Max equal values for residual = 10
+    set Theta = 0.5
+    set Relative starting time = 0 
+    set Relative maximum time = 10
+end
